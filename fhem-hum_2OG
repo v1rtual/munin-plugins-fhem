@@ -1,0 +1,26 @@
+#!/bin/bash
+ 
+#%# family=auto
+#%# capabilities=autoconf
+ 
+if [ "$1" = "autoconf" ]; then
+ echo "yes"
+ exit 0
+fi
+
+SENSOR="Temp_2OG"
+LOG=`ls -tr /var/log/fhem/$SENSOR* | tail -n1`
+RESULT=`tail -n 10 $LOG|grep H:|tail -n1|awk '{print $6}'`
+ 
+if [ "$1" = "config" ] ; then
+ echo 'graph_title Luftfeuchtigkeit Flur oben'
+ echo 'graph_vlabel Prozent'
+ echo 'graph_category Umweltdaten'
+ echo $SENSOR.label $SENSOR
+ exit 0
+fi
+ 
+echo $SENSOR.value $RESULT
+ 
+exit 0
+

@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+#%# family=auto
+#%# capabilities=autoconf
+
+name = 'Hauptzaehler'
+
+if ARGV[0] == 'autoconf'
+  puts 'yes'
+  exit 0
+elsif ARGV[0] == 'config'
+  puts 'graph_title PEAK Stromverbrauch'
+  puts 'graph_vlabel W'
+  puts 'graph_category Verbrauchsdaten'
+  puts "#{name}.label #{name}"
+  exit 0
+end
+
+logfile=`ls -tr /var/log/fhem/#{name}* | tail -n1`
+count = `tail -n 10 #{logfile.strip} |grep peak:|awk '{print $4}' `
+peak = 1.00 / count.to_i * 12 * 10 * 1000
+puts "#{name}.value #{peak.to_i}"
+

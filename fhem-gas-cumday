@@ -1,0 +1,27 @@
+#!/bin/bash
+ 
+#%# family=auto
+#%# capabilities=autoconf
+ 
+if [ "$1" = "autoconf" ]; then
+ echo "yes"
+ exit 0
+fi
+
+ZAEHLER="Gaszaehler"
+LOG=`ls -tr /var/log/fhem/$ZAEHLER* | tail -n1`
+RESULT=`tail -n 5000 $LOG |grep cum_day|tail -n1|awk '{print $5}'`
+ 
+if [ "$1" = "config" ] ; then
+ echo 'graph_title Gasverbrauch vom Vortag'
+ echo 'graph_vlabel m^3'
+ echo 'graph_info Gasverbrauch'
+ echo 'graph_category Verbrauchsdaten'
+ echo $ZAEHLER.label $ZAEHLER
+ exit 0
+fi
+ 
+echo $ZAEHLER.value $RESULT
+ 
+exit 0
+

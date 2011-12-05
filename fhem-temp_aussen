@@ -1,0 +1,30 @@
+#!/bin/bash
+ 
+# Munin-Plugin zur Aufzeichnung der Temperaturen, die mittels FHZ1000/FHZ1300
+# erfasst werden.
+ 
+#%# family=auto
+#%# capabilities=autoconf
+ 
+if [ "$1" = "autoconf" ]; then
+ echo "yes"
+ exit 0
+fi
+
+SENSOR="KS300"
+LOG=`ls -tr /var/log/fhem/$SENSOR* | tail -n1 `
+RESULT=`tail -n 10 $LOG|grep T:|tail -n1|awk '{print $4}'`
+ 
+if [ "$1" = "config" ] ; then
+ echo 'graph_title Temperatur Aussen'
+ echo 'graph_vlabel Grad'
+# echo 'graph_info Leistung'
+ echo 'graph_category Umweltdaten'
+ echo $SENSOR.label $SENSOR
+ exit 0
+fi
+ 
+echo $SENSOR.value $RESULT
+ 
+exit 0
+
