@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+#%# family=auto
+#%# capabilities=autoconf
+
+name = 'klingel'
+
+if ARGV[0] == 'autoconf'
+  puts 'yes'
+  exit 0
+elsif ARGV[0] == 'config'
+  puts 'graph_title Tuerklingel'
+  puts 'graph_vlabel events'
+  puts 'graph_category Activity'
+  puts "#{name}.label #{name}"
+  exit 0
+end
+
+require 'time'
+
+count = 0
+minutes_ago = Time.now - 300
+
+logfile=`ls -tr /var/log/fhem/fhem* | tail -n1`
+lines = `tail -n 300 #{logfile.strip} |grep -a #{name}`
+lines.each do |l|
+  count += 1 if Time.parse(l) >= minutes_ago
+end
+puts "#{name}.value #{count}"
+
+
